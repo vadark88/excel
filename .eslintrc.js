@@ -2,7 +2,7 @@ module.exports = {
     parser: '@babel/eslint-parser',
     parserOptions: {
         babelOptions: {
-            configFile: './babel.config.js'
+            configFile: './babel.config.json'
         }
     },
     env: {
@@ -12,6 +12,8 @@ module.exports = {
     },
     extends: ['eslint:recommended', 'google'],
     rules: {
-
+        'semi': 'off',
+        'comma-dangle': 'off',
+        'require-jsdoc': 'off'
     }
 }

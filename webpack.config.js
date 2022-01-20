@@ -9,6 +9,17 @@ module.exports = (env, argv) => {
     const isDev = !isProd
 
     const filename = ext => isProd ?`[name].[contenthash].bundle.${ext}` :`[name].bundle.${ext}`
+
+    const jsLoaders = () => {
+        return [{
+            loader: "babel-loader",
+            options: {
+                presets: ['@babel/preset-env'],
+                plugins: ['@babel/plugin-proposal-class-properties']
+            }
+        }]
+      }
+
     const plugins = () => {
         const base = [
             new HtmlWebpackPlugin({
@@ -51,7 +62,7 @@ module.exports = (env, argv) => {
             extensions: ['.js'],
             alias: {
                 '@': path.resolve(__dirname, 'src'),
-                '@core': path.resolve(__dirname, 'core')
+                '@core': path.resolve(__dirname, 'src/core')
             }
         },
         devServer: {
@@ -76,12 +87,7 @@ module.exports = (env, argv) => {
                 {
                     test: /\.m?js$/,
                     exclude: /node_modules/,
-                    use: {
-                        loader: "babel-loader",
-                        options: {
-                            presets: ['@babel/preset-env']
-                        }
-                    }
+                    use: jsLoaders()
                 },
             ],
         },

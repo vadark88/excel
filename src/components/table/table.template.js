@@ -4,22 +4,30 @@ const CODES = {
   Z: 90
 }
 
-const toCell = () => {
+const toCell = (_, colIdx) => {
   return `
-    <div class="cell selected" contenteditable=""></div>
+    <div class="cell selected" contenteditable="" data-col="${colIdx}">
+    </div>
   `
 }
 
-const toColumn = (colChar) => {
+const toColumn = (colChar, idx) => {
   return `
-   <div class="column">${colChar}</div>
+   <div class="column" data-type="resizable" data-col="${idx}">
+       ${colChar}
+       <div class="col-resize" data-resize="col"></div>
+   </div>
   `
 }
 
 const createRow = (num, content) => {
+  const resizer = num ? '<div class="row-resize" data-resize="row"></div>' : ''
   return `
-  <div class="row">
-    <div class="row-info">${num}</div> 
+  <div class="row" data-type="resizable">
+    <div class="row-info">
+        ${num}
+        ${resizer}
+    </div> 
     <div class="row-data">${content}</div> 
   </div>
   `

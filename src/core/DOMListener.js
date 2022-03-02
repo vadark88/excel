@@ -1,30 +1,40 @@
-import {capitalize} from '@core/utils';
+import {capitalize} from '@core/utils'
 
-export class DOMListener {
+export class DomListener {
   constructor($root, listeners = []) {
-    if (!$root)
-      throw new Error('No $root provided')
-
+    if (!$root) {
+      throw new Error(`No $root provided for DomListener!`)
+    }
     this.$root = $root
     this.listeners = listeners
   }
 
   initDOMListeners() {
-    this.listeners.forEach(listenerName => {
-      const method = getMethodName(listenerName)
-      if (!this[method])
-        throw new Error(`Нет метода ${method} в классе ${this.name}`)
+    this.listeners.forEach(listener => {
+      const method = getMethodName(listener)
+      if (!this[method]) {
+        const name = this.name || ''
+        throw new Error(
+            `Method ${method} is not implemented in ${name} Component`
+        )
+      }
       this[method] = this[method].bind(this)
-      this.$root.on(listenerName, this[method])
+      // Тоже самое что и addEventListener
+      this.$root.on(listener, this[method])
     })
   }
 
   removeDOMListeners() {
-    this.listeners.forEach(listenerName => {
-      const method = getMethodName(listenerName)
-      this.$root.off(listenerName, this[method])
+    this.listeners.forEach(listener => {
+      const method = getMethodName(listener)
+      this.$root.off(listener, this[method])
     })
   }
 }
 
-const getMethodName = (eventName) => 'on' + capitalize(eventName)
+// input => onInput
+function getMethodName(eventName) {
+  return 'on' + capitalize(eventName)
+}
+
+

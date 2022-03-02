@@ -5,7 +5,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: $formula-height + $formula-fields-top;
+  top: $header-height + $toolbar-height + $formula-height;
   overflow-x: auto;
   padding-bottom: 2px;
 
@@ -17,8 +17,8 @@
   }
 
   .row-info {
-    display: flex;
     position: relative;
+    display: flex;
     justify-content: center;
     align-items: center;
     min-width: $info-cell-width;
@@ -42,7 +42,8 @@
     width: $cell-width;
     border: 1px solid $border-color;
     border-top: 0;
-    border-left: 0 ;
+    border-left: 0;
+    height: 100%;
   }
 
   .cell {
@@ -56,24 +57,25 @@
     color: #111;
     white-space: nowrap;
     outline: none;
-  }
 
-  .selected {
-    border: none;
-    outline: 2px solid $primary-color;
-    z-index: 2;
+
+    &.selected {
+      border: none;
+      outline: 2px solid $primary-color;
+      z-index: 2;
+    }
   }
 
   .col-resize, .row-resize {
     position: absolute;
-    opacity: 0;
     bottom: 0;
     right: 0;
-    z-index: 1000;
     background: $primary-color;
+    opacity: 0;
+    z-index: 1000;
 
     &:hover {
-      opacity: 1;
+      opacity: 1!important;
     }
   }
 
@@ -94,4 +96,5 @@
       cursor: row-resize;
     }
   }
+
 }

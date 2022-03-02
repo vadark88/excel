@@ -1,13 +1,16 @@
-import {range} from '@core/utils';
+import {range} from '@core/utils'
 
 export function shouldResize(event) {
   return event.target.dataset.resize
 }
-export const isCell = event => event.target.dataset.type === 'cell'
 
-export const matrix = ($target, $current) => {
-  const target = $target.getDataId(true)
-  const current = $current.getDataId(true)
+export function isCell(event) {
+  return event.target.dataset.type === 'cell'
+}
+
+export function matrix($target, $current) {
+  const target = $target.id(true)
+  const current = $current.id(true)
   const cols = range(current.col, target.col)
   const rows = range(current.row, target.row)
 
@@ -17,7 +20,7 @@ export const matrix = ($target, $current) => {
   }, [])
 }
 
-export const nextSelector = (key, {col, row}) => {
+export function nextSelector(key, {col, row}) {
   const MIN_VALUE = 0
   switch (key) {
     case 'Enter':

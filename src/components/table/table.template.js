@@ -1,65 +1,112 @@
+import {toInlineStyles} from '@core/utils'
+import {defaultStyles} from '@/constants'
+import {parse} from '@core/parse';
 
 const CODES = {
   A: 65,
   Z: 90
 }
 
-/*const toCell = (_, colIdx) => {
-  return `
-    <div class="cell selected" contenteditable="" data-col="${colIdx}">
-    </div>
-  `
-}*/
+const DEFAULT_WIDTH = 120
+const DEFAULT_HEIGHT = 24
 
-function toCell(row) {
+function getWidth(state, index) {
+  return (state[index] || DEFAULT_WIDTH) + 'px'
+}
+
+function getHeight(state, index) {
+  return (state[index] || DEFAULT_HEIGHT) + 'px'
+}
+
+function toCell(state, row) {
   return function(_, col) {
+    const id = `${row}:${col}`
+    const width = getWidth(state.colState, col)
+    const data = state.dataState[id]
+    const styles = toInlineStyles({
+      ...defaultStyles,
+      ...state.stylesState[id]
+    })
     return `
-    <div class="cell"
-        contentEditable="" 
+      <div 
+        class="cell" 
+        contenteditable 
         data-col="${col}"
         data-type="cell"
-        data-id="${row}:${col}">
-    </div>
-`
+        data-id="${id}"
+        data-value="${data || ''}"
+        style="${styles}; width: ${width}"
+      >${parse(data) || ''}</div>
+    `
   }
 }
 
-const toColumn = (colChar, idx) => {
+function toColumn({col, index, width}) {
   return `
-   <div class="column" data-type="resizable" data-col="${idx}">
-       ${colChar}
-       <div class="col-resize" data-resize="col"></div>
-   </div>
+    <div 
+      class="column" 
+      data-type="resizable" 
+      data-col="${index}" 
+      style="width: ${width}"
+    >
+      ${col}
+      <div class="col-resize" data-resize="col"></div>
+    </div>
   `
 }
 
-const createRow = (num, content) => {
-  const resizer = num ? '<div class="row-resize" data-resize="row"></div>' : ''
+function createRow(index, content, state = {}) {
+  const resize = index ? '<div class="row-resize" data-resize="row"></div>' : ''
+  const height = getHeight(state, index)
   return `
-  <div class="row" data-type="resizable">
-    <div class="row-info">
-        ${num}
-        ${resizer}
-    </div> 
-    <div class="row-data">${content}</div> 
-  </div>
+    <div 
+      class="row" 
+      data-type="resizable" 
+      data-row="${index}"
+      style="height: ${height}"
+    >
+      <div class="row-info">
+        ${index ? index : ''}
+        ${resize}
+      </div>
+      <div class="row-data">${content}</div>
+    </div>
   `
 }
 
-const toChar = (_, idx) => String.fromCharCode(CODES.A + idx)
+function toChar(_, index) {
+  return String.fromCharCode(CODES.A + index)
+}
 
-export function createTable(rowsCount= 15) {
-  const colsCount = CODES.Z - CODES.A + 1
-  const rows = []
-  const columns = new Array(colsCount)
-    .fill('').map(toChar).map(toColumn).join('')
-
-  rows.push(createRow('', columns))
-
-    for (let row = 0; row <= rowsCount; row++) {
-      const cells = new Array(colsCount).fill('').map(toCell(row)).join('')
-      rows.push(createRow(row,cells))
+function withWidthFrom(state) {
+  return function(col, index) {
+    return {
+      col, index, width: getWidth(state.colState, index)
     }
+  }
+}
+
+export function createTable(rowsCount = 15, state = {}) {
+  const colsCount = CODES.Z - CODES.A + 1 // Compute cols count
+  const rows = []
+
+  const cols = new Array(colsCount)
+      .fill('')
+      .map(toChar)
+      .map(withWidthFrom(state))
+      .map(toColumn)
+      .join('')
+
+  rows.push(createRow(null, cols))
+
+  for (let row = 0; row < rowsCount; row++) {
+    const cells = new Array(colsCount)
+        .fill('')
+        .map(toCell(state, row))
+        .join('')
+
+    rows.push(createRow(row + 1, cells, state.rowState))
+  }
 
   return rows.join('')
 }

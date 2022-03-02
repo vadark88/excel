@@ -8,7 +8,7 @@
     left: 0;
     right: 0;
     top: 0;
-    height: $dashboard-header-height;
+    height: $db-header-height;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -18,7 +18,7 @@
   }
 
   &__new {
-  margin-top: $dashboard-header-height;
+    margin-top: $db-header-height;
     padding: 1.5rem;
     background: #dadce0;
   }
@@ -34,7 +34,7 @@
     align-items: center;
     font-size: 1.5rem;
     text-decoration: none;
-    color: black;
+    color: #000;
     text-align: center;
 
     &:hover {
@@ -64,7 +64,7 @@
   }
 
   &__list {
-    @include clear-list
+    @include clear-list;
   }
 
   &__record {
@@ -82,13 +82,13 @@
     a {
       text-decoration: none;
       cursor: pointer;
-      font-size: 14px;
       color: #202124;
+      font-size: 14px;
 
       &:hover {
         text-decoration: underline;
       }
     }
   }
-}
 
+}

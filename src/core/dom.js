@@ -14,13 +14,13 @@ class Dom {
   }
 
   text(text) {
-    if (typeof text === 'string') {
+    if (typeof text !== 'undefined') {
       this.$el.textContent = text
       return this
     }
-    if (this.$el.tagName.toLowerCase() === 'input')
+    if (this.$el.tagName.toLowerCase() === 'input') {
       return this.$el.value.trim()
-
+    }
     return this.$el.textContent.trim()
   }
 
@@ -30,20 +30,27 @@ class Dom {
   }
 
   on(eventType, callback) {
-    this.$el.addEventListener(eventType,callback)
+    this.$el.addEventListener(eventType, callback)
   }
 
-  off(eventName, callback) {
-    this.$el.removeEventListener(eventName, callback)
+  off(eventType, callback) {
+    this.$el.removeEventListener(eventType, callback)
+  }
+
+  find(selector) {
+    return $(this.$el.querySelector(selector))
   }
 
   append(node) {
-    if (node instanceof Dom)
+    if (node instanceof Dom) {
       node = node.$el
-    if (Element.prototype.append)
+    }
+
+    if (Element.prototype.append) {
       this.$el.append(node)
-    else
+    } else {
       this.$el.appendChild(node)
+    }
 
     return this
   }
@@ -56,36 +63,51 @@ class Dom {
     return $(this.$el.closest(selector))
   }
 
-  findAll(selector) {
-    return this.$el.querySelectorAll(selector)
-  }
-
-  find(selector) {
-    return $(this.$el.querySelector(selector))
-  }
-
- focus() {
-    this.$el.focus()
-   return this
- }
-
   getCoords() {
     return this.$el.getBoundingClientRect()
   }
 
-  css(styles = {}) {
-    Object.keys(styles).forEach(key => this.$el.style[key] = styles[key])
+  findAll(selector) {
+    return this.$el.querySelectorAll(selector)
   }
 
-  getDataId(parse) {
+  css(styles = {}) {
+    Object
+        .keys(styles)
+        .forEach(key => {
+          this.$el.style[key] = styles[key]
+        })
+  }
+
+  getStyles(styles = []) {
+    return styles.reduce((res, s) => {
+      res[s] = this.$el.style[s]
+      return res
+    }, {})
+  }
+
+  id(parse) {
     if (parse) {
-      const parsed = this.getDataId().split(':')
+      const parsed = this.id().split(':')
       return {
         row: +parsed[0],
         col: +parsed[1]
       }
-    } else
-        return this.data.id
+    }
+    return this.data.id
+  }
+
+  focus() {
+    this.$el.focus()
+    return this
+  }
+
+  attr(name, value) {
+    if (value) {
+      this.$el.setAttribute(name, value)
+      return this
+    }
+      this.$el.getAttribute(name)
   }
 
   addClass(className) {
@@ -108,6 +130,5 @@ $.create = (tagName, classes = '') => {
   if (classes) {
     el.classList.add(classes)
   }
-
   return $(el)
 }

@@ -8,7 +8,9 @@ import {rootReducer} from '@/redux/rootReducer'
 import {debounce, storage} from '@core/utils';
 import {initialState} from '@/redux/initialState'
 import './scss/index.scss'
+import {Router} from '@core/routes/Router';
 
+/*
 const store = createStore(rootReducer, initialState)
 
 const stateListener = debounce(state => {
@@ -24,3 +26,7 @@ const excel = new Excel('#app', {
 })
 
 excel.render()
+*/
+new Router('#app', {
+
+})

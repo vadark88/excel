@@ -18,7 +18,7 @@ module.exports = (env, argv) => {
                 plugins: ['@babel/plugin-proposal-class-properties']
             }
         }]
-      }
+    }
 
     const plugins = () => {
         const base = [
